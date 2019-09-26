@@ -1,5 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Run bakend API
+
+Para executar o projeto é necessário iniciar o backend em java disponível no instalura.jar.<br>
+Execute o comando `java -jar instalura.jar`
+
 ## Available Scripts
 
 In the project directory, you can run:
