@@ -168,7 +168,8 @@ body {
   padding: 0 1em 1em 1em;
 }
 
-.fotoAtualizacoes-like {
+.fotoAtualizacoes-like,
+.fotoAtualizacoes-like-ativo {
   background: url(../images/s2.png) no-repeat center center;
   background-size: 32px 32px;
   width: 44px;
@@ -179,7 +180,8 @@ body {
   margin-right: 1em;
 }
 
-.fotoAtualizacoes-like:hover {
+.fotoAtualizacoes-like:hover,
+.fotoAtualizacoes-like-ativo {
   background-image: url(../images/s2-check.png);
 }
 

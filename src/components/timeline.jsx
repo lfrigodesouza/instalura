@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import PubSub from 'pubsub-js';
 import FotoItem from './foto';
+import { CSSTransitionGroup } from 'react-transition-group';
 
 class Timeline extends Component {
   constructor(props) {
@@ -15,12 +17,16 @@ class Timeline extends Component {
 
     let urlPerfil;
     if (this.login === undefined) {
-      urlPerfil = `http://localhost:8080/api/fotos?X-AUTH-TOKEN=${token}`;
+      urlPerfil = `http://localhost:8080/api/fotos`;
     } else {
       urlPerfil = `http://localhost:8080/api/public/fotos/${this.login}`;
     }
 
-    fetch(urlPerfil)
+    fetch(urlPerfil, {
+      headers: new Headers({
+        'X-AUTH-TOKEN': token
+      })
+    })
       .then(res => res.json())
       .then(fotos => {
         this.setState({ fotos: fotos });
@@ -29,6 +35,12 @@ class Timeline extends Component {
 
   componentDidMount() {
     this.carregaFotos();
+  }
+
+  componentWillMount() {
+    PubSub.subscribe('timeline', (topic, data) => {
+      this.setState({ fotos: data });
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -41,9 +53,15 @@ class Timeline extends Component {
   render() {
     return (
       <div className='fotos container'>
-        {this.state.fotos.map(foto => {
-          return <FotoItem foto={foto} key={foto.id} />;
-        })}
+        <CSSTransitionGroup
+          transitionName='timeline'
+          transitionEnterTimeout={500}
+          transitionLeaveTimeout={300}
+        >
+          {this.state.fotos.map(foto => {
+            return <FotoItem foto={foto} key={foto.id} />;
+          })}
+        </CSSTransitionGroup>
       </div>
     );
   }
