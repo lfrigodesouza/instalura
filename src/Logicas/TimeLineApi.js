@@ -1,3 +1,10 @@
+import {
+  listagem,
+  comentagem,
+  likagem,
+  alertagem
+} from '../actions/actionCreator.js';
+
 export default class TimeLineApi {
   static lista(urlPerfil) {
     return dispatch => {
@@ -9,7 +16,7 @@ export default class TimeLineApi {
       })
         .then(res => res.json())
         .then(fotos => {
-          dispatch({ type: 'LISTAGEM', fotos });
+          dispatch(listagem(fotos));
           return fotos;
         });
     };
@@ -33,7 +40,7 @@ export default class TimeLineApi {
           }
         })
         .then(novoComentario => {
-          dispatch({ type: 'COMENTARIO', fotoId, novoComentario });
+          dispatch(comentagem(fotoId, novoComentario));
           return novoComentario;
         });
     };
@@ -55,8 +62,24 @@ export default class TimeLineApi {
           }
         })
         .then(liker => {
-          dispatch({ type: 'LIKE', fotoId, liker });
+          dispatch(likagem(fotoId, liker));
           return liker;
+        });
+    };
+  }
+
+  static pesquisa(login) {
+    return dispatch => {
+      fetch(`http://localhost:8080/api/public/fotos/${login}`)
+        .then(res => res.json())
+        .then(fotos => {
+          if (fotos.length === 0) {
+            dispatch(alertagem('Usuário não encontrado'));
+          } else {
+            dispatch(alertagem(''));
+          }
+          dispatch(listagem(fotos));
+          return fotos;
         });
     };
   }

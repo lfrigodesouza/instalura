@@ -79,9 +79,6 @@ class FotoAtualizacoes extends Component {
   };
 
   handleLikeada = () => {
-    console.log(
-      `Foto: ${this.props.foto.id} | Likeada: ${this.props.foto.likeada}`
-    );
     return this.props.foto.likeada
       ? 'fotoAtualizacoes-like-ativo'
       : 'fotoAtualizacoes-like';
