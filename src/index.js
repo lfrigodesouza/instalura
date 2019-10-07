@@ -8,6 +8,14 @@ import { Router, Route, browserHistory } from 'react-router';
 import { matchPattern } from 'react-router/lib/PatternUtils';
 import Login from './components/login';
 import Logout from './components/logout';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
+import { timeline } from './Reducers/timeline.js';
+import { notificacao } from './Reducers/header.js';
+import thunkMiddleware from 'redux-thunk';
+import { Provider } from 'react-redux';
+
+const reducers = combineReducers({ timeline, notificacao });
+const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
 function handleAuth(nextState, replace) {
   const result = matchPattern(
@@ -23,10 +31,12 @@ function handleAuth(nextState, replace) {
 }
 
 ReactDOM.render(
-  <Router history={browserHistory}>
-    <Route path='/' component={Login} />
-    <Route path='/timeline(/:login)' component={App} onEnter={handleAuth} />
-    <Route path='/logout' component={Logout} />
-  </Router>,
+  <Provider store={store}>
+    <Router history={browserHistory}>
+      <Route path='/' component={Login} />
+      <Route path='/timeline(/:login)' component={App} onEnter={handleAuth} />
+      <Route path='/logout' component={Logout} />
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );

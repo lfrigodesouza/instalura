@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 
 function TrocaFoto(lista, fotoId, callbackAtualizaPropriedades) {
-  const fotoEstadoAntigo = lista.find(f => f.id == fotoId);
+  const fotoEstadoAntigo = lista.find(f => f.id === fotoId);
   const novasPropriedades = callbackAtualizaPropriedades(fotoEstadoAntigo);
   const fotoEstadoNovo = Object.assign({}, fotoEstadoAntigo, novasPropriedades);
 

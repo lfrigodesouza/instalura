@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import FotoItem from './foto';
 import { CSSTransitionGroup } from 'react-transition-group';
 import TimeLineApi from '../Logicas/TimeLineApi';
+import { connect } from 'react-redux';
 
 class Timeline extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      fotos: []
-    };
     this.login = this.props.login;
   }
 
@@ -20,33 +18,33 @@ class Timeline extends Component {
       urlPerfil = `http://localhost:8080/api/public/fotos/${this.login}`;
     }
 
-    this.props.store.dispatch(TimeLineApi.lista(urlPerfil));
+    this.props.lista(urlPerfil);
   };
 
   componentDidMount() {
     this.carregaFotos();
   }
 
-  componentWillMount() {
-    this.props.store.subscribe(() => {
-      this.setState({ fotos: this.props.store.getState().timeline });
-    });
-  }
+  // componentWillMount() {
+  //   this.props.store.subscribe(() => {
+  //     this.setState({ fotos: this.props.store.getState().timeline });
+  //   });
+  // }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.login !== undefined) {
+    if (nextProps.login !== this.login) {
       this.login = nextProps.login;
       this.carregaFotos();
     }
   }
 
-  handleComment = (comentario, fotoId) => {
-    this.props.store.dispatch(TimeLineApi.comenta(comentario, fotoId));
-  };
+  // handleComment = (comentario, fotoId) => {
+  //   this.props.store.dispatch(TimeLineApi.comenta(comentario, fotoId));
+  // };
 
-  handleLike = fotoId => {
-    this.props.store.dispatch(TimeLineApi.like(fotoId));
-  };
+  // handleLike = fotoId => {
+  //   this.props.store.dispatch(TimeLineApi.like(fotoId));
+  // };
 
   render() {
     return (
@@ -56,13 +54,13 @@ class Timeline extends Component {
           transitionEnterTimeout={500}
           transitionLeaveTimeout={300}
         >
-          {this.state.fotos.map(foto => {
+          {this.props.fotos.map(foto => {
             return (
               <FotoItem
                 foto={foto}
                 key={foto.id}
-                onLike={this.handleLike}
-                onComment={this.handleComment}
+                onLike={this.props.handleLike}
+                onComment={this.props.handleComment}
               />
             );
           })}
@@ -72,4 +70,27 @@ class Timeline extends Component {
   }
 }
 
-export default Timeline;
+const mapStateToProps = state => {
+  return { fotos: state.timeline };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    handleLike: fotoId => {
+      dispatch(TimeLineApi.like(fotoId));
+    },
+    handleComment: (comentario, fotoId) => {
+      dispatch(TimeLineApi.comenta(comentario, fotoId));
+    },
+    lista: urlPerfil => {
+      dispatch(TimeLineApi.lista(urlPerfil));
+    }
+  };
+};
+
+const TimelineContainer = new connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Timeline);
+
+export default TimelineContainer;
